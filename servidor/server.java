@@ -1,4 +1,3 @@
-package servidor;
 import java.net.*;
 import java.io.*;
 
@@ -11,6 +10,9 @@ public class server  {
       InputStream in;
       BufferedReader sinput;
       Socket csk,clisoket, socket;
+
+      private String user1 = "user";
+      private String pass1 = "1234";
 
       public server() {
           //  Programa Servidor
@@ -25,7 +27,7 @@ public class server  {
            }
 			System.out.println("Servidor Ativo ..... ");
             try {
-              while(true) {
+              while (true){
                 clisoket = ssocket.accept();
                 csk = clisoket;
 
@@ -33,20 +35,31 @@ public class server  {
                 soutput = new PrintStream(csk.getOutputStream());  // Envia uma sequencia de bytes para Cliente
             
                 String men = sinput.readLine(); // pega a linha Enviada pelo Cliente
-                
-                soutput.println("Server response: File "+men+" uploaded succefully.");               
-                soutput2 = new FileOutputStream("servidor/"+men);  // Envia uma sequencia de bytes para Cliente
+                String[] arr = men.split(",");
 
-                byte[] bytes = new byte[16*1024];
-                in = clisoket.getInputStream();
-                int count;
-                while ((count = in.read(bytes)) > 0) {
-                  soutput2.write(bytes, 0, count);
-                }                                                  
-              }                 
+                if (arr[0].equals("false")){
+                  if(!arr[1].equals(this.user1) || !arr[2].equals(this.pass1)){
+                    soutput.println("Credenciais incorretas.");               
+                  }
+                  else{
+                    soutput.println("true");               
+                  }
+                }
+                else{               
+                  soutput.println("Server response: File "+arr[0]+" uploaded succefully.");               
+                  soutput2 = new FileOutputStream("servidor/"+arr[0]);  // Envia uma sequencia de bytes para Cliente
+
+                  byte[] bytes = new byte[16*1024];
+                  in = clisoket.getInputStream();
+                  int count;
+                  while ((count = in.read(bytes)) > 0) {
+                    soutput2.write(bytes, 0, count);                    
+                  }                                                           
+                }          
+              }       
             }
             catch(Exception e) {
-               System.err.println(e.getMessage());
+               System.err.println(e);
             }
         }
 
