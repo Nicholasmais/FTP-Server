@@ -19,24 +19,20 @@ class client {
               System.out.println("Nome do arquivo:");
               String str = br.readLine();
 
-              File file = new File("clientes/cliente a/arquivo.txt");
-              long length = file.length();
+              File file = new File("clientes/cliente a/" + str);
 
               byte[] bytes = new byte[16 * 1024];
               coutput.println(str); // Envia Para o Servidor !!
               InputStream in = new FileInputStream(file);
               
-              System.out.println(file);
-              System.out.println(length);
-              System.out.println(in);
-
               int count;
               while ((count = in.read(bytes)) > 0) {
                 coutput.write(bytes, 0, count);
               }
 
               String str2 = cinput.readLine(); // Recebe dados do servidor
-              System.out.println(str2);              
+              System.out.println(str2);
+              in.close();           
            }
          catch(Exception e)
          {

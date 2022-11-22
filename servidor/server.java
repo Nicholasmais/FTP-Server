@@ -33,10 +33,9 @@ public class server  {
                 soutput = new PrintStream(csk.getOutputStream());  // Envia uma sequencia de bytes para Cliente
             
                 String men = sinput.readLine(); // pega a linha Enviada pelo Cliente
-                System.out.println("Cliente Envia : "+men);
                 
-                soutput.println("Servidor Envia : Ola Recebido !!! " + men);               
-                soutput2 = new FileOutputStream("clientes/cliente b/"+men);  // Envia uma sequencia de bytes para Cliente
+                soutput.println("Server response: File "+men+" uploaded succefully.");               
+                soutput2 = new FileOutputStream("servidor/"+men);  // Envia uma sequencia de bytes para Cliente
 
                 byte[] bytes = new byte[16*1024];
                 in = clisoket.getInputStream();
