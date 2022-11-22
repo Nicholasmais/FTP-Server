@@ -1,7 +1,5 @@
-import java.lang.*;
 import java.net.*;
 import java.io.*;
-import java.util.Scanner;
 
 class client {
      BufferedReader br = null;
@@ -36,7 +34,7 @@ class client {
               while ((count = in.read(bytes)) > 0) {
                 coutput.write(bytes, 0, count);
               }
-              
+
               String str2 = cinput.readLine(); // Recebe dados do servidor
               System.out.println(str2);              
            }
