@@ -1,4 +1,5 @@
 import java.net.*;
+
 import java.io.*;
 
 public class server  {
@@ -6,10 +7,14 @@ public class server  {
       ServerSocket ssocket;
       String lercaixa;
       PrintStream  soutput;
-      OutputStream  soutput2;
-      InputStream in;
+      OutputStream  soutput2, soutput3;
+      InputStream in, in2;
       BufferedReader sinput;
       Socket csk,clisoket, socket;
+      byte[] bytes, bytes2;
+      int count, count2;
+      FileInputStream fis = null;
+      BufferedInputStream bis = null;
 
       private String user1 = "user";
       private String pass1 = "1234";
@@ -38,23 +43,40 @@ public class server  {
                 String[] arr = men.split(",");
 
                 if (arr[0].equals("false")){
-                  if(!arr[1].equals(this.user1) || !arr[2].equals(this.pass1)){
+                  if(!arr[2].equals(this.user1) || !arr[3].equals(this.pass1)){
                     soutput.println("Credenciais incorretas.");               
                   }
                   else{
                     soutput.println("true");               
                   }
                 }
-                else{               
-                  soutput.println("Server response: File "+arr[0]+" uploaded succefully.");               
-                  soutput2 = new FileOutputStream("servidor/"+arr[0]);  // Envia uma sequencia de bytes para Cliente
-
-                  byte[] bytes = new byte[16*1024];
-                  in = clisoket.getInputStream();
-                  int count;
-                  while ((count = in.read(bytes)) > 0) {
-                    soutput2.write(bytes, 0, count);                    
-                  }                                                           
+                else{
+                  System.out.println(arr[0]);
+                  switch(arr[0]){    
+                    case "!put":
+                      soutput.println("Server response: File "+arr[1]+" uploaded succefully.");               
+                      soutput2 = new FileOutputStream("servidor/"+arr[1]);
+                      bytes = new byte[16*1024];
+                      in = clisoket.getInputStream();
+                      while ((count = in.read(bytes)) > 0) {
+                        soutput2.write(bytes, 0, count);
+                      }
+                      break;
+                                        
+                    case "!get":
+                      soutput.println("Server response: File "+arr[1]+" downloaded succefully.");                                          
+                      soutput2 = new FileOutputStream(arr[4] + arr[1]);
+                      bytes2 = new byte[16*1024];
+                      InputStream file = new FileInputStream("servidor/"+arr[1]);
+                      while ((count2 = file.read(bytes2)) > 0) {
+                        soutput2.write(bytes2, 0, count2);
+                      }
+                      break;                    
+                    
+                    default:
+                      soutput.println("Server response: Invalid command." + arr[0]);
+                      break;
+                  }                       
                 }          
               }       
             }

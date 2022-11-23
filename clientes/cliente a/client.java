@@ -8,7 +8,11 @@ class client {
     Socket clisoc;
     boolean auth = false;
     String user, pass;
-
+    FileOutputStream fos = null;
+    BufferedOutputStream bos = null;
+    int bytesRead;
+    int current = 0;
+    private String dir = "clientes/cliente a/";
     public client() {
       try {
         while (true){
@@ -24,7 +28,7 @@ class client {
             System.out.println("Senha:");
             pass = br.readLine();
 
-            coutput.println(Boolean.toString(auth) + "," + user + "," + pass); 
+            coutput.println(Boolean.toString(auth)+ "," + "_" + "," + user + "," + pass + "," + this.dir); 
             String conn = cinput.readLine();
             auth = Boolean.valueOf(conn);
             if (!auth){
@@ -32,22 +36,28 @@ class client {
             }
           }
           else{
+            System.out.println("!get para baixar arquivo. !put para enviar arquivo:");
+            String method = br.readLine();
+
             System.out.println("Nome do arquivo:");
-            String str = br.readLine();
+            String fileName = br.readLine();
 
-            File file = new File("clientes/cliente a/" + str);
+            File file = new File(this.dir + fileName);
             byte[] bytes = new byte[16 * 1024];
-            coutput.println(str + "," + user + "," + pass); // Envia Para o Servidor !!
-            InputStream in = new FileInputStream(file);
+            coutput.println(method + "," + fileName + "," + user + "," + pass + "," + this.dir); // Envia Para o Servidor !!
             
-            int count;
-            while ((count = in.read(bytes)) > 0) {
-              coutput.write(bytes, 0, count);
+            if (method.equals("!put")){
+              InputStream in = new FileInputStream(file);
+              
+              int count;
+              while ((count = in.read(bytes)) > 0) {
+                coutput.write(bytes, 0, count);
+              }
+              in.close();  
             }
-
-            String str2 = cinput.readLine(); // Recebe dados do servidor
-            System.out.println(str2);
-            in.close();  
+      
+            String str = cinput.readLine(); // Recebe dados do servidor
+            System.out.println(str);
           }
         }
       }
