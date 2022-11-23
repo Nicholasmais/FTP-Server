@@ -15,7 +15,7 @@ public class server  {
       int count, count2;
       FileInputStream fis = null;
       BufferedInputStream bis = null;
-
+      InputStream file;
       private String user1 = "user";
       private String pass1 = "1234";
 
@@ -41,9 +41,10 @@ public class server  {
             
                 String men = sinput.readLine(); // pega a linha Enviada pelo Cliente
                 String[] arr = men.split(",");
-
+                String[] files = arr[1].split(";");
+                int numFiles = Integer.parseInt(arr[2]);
                 if (arr[0].equals("false")){
-                  if(!arr[2].equals(this.user1) || !arr[3].equals(this.pass1)){
+                  if(!arr[3].equals(this.user1) || !arr[4].equals(this.pass1)){
                     soutput.println("Credenciais incorretas.");               
                   }
                   else{
@@ -51,30 +52,34 @@ public class server  {
                   }
                 }
                 else{
-                  System.out.println(arr[0]);
                   switch(arr[0]){    
                     case "!put":
-                      soutput.println("Server response: File "+arr[1]+" uploaded succefully.");               
-                      soutput2 = new FileOutputStream("servidor/"+arr[1]);
-                      bytes = new byte[16*1024];
-                      in = clisoket.getInputStream();
-                      while ((count = in.read(bytes)) > 0) {
-                        soutput2.write(bytes, 0, count);
+                    case "!mput":
+                      for (int i = 0; i <= numFiles; i++){
+                        soutput.println("Server response: File "+files[i]+" uploaded succefully.");               
+                        soutput2 = new FileOutputStream("servidor/"+files[i]);
+                        bytes = new byte[16*1024];
+                        in = clisoket.getInputStream();
+                        while ((count = in.read(bytes)) > 0) {
+                          soutput2.write(bytes, 0, count);
+                        }
                       }
-                      break;
-                                        
+                      break;                                        
                     case "!get":
-                      soutput.println("Server response: File "+arr[1]+" downloaded succefully.");                                          
-                      soutput2 = new FileOutputStream(arr[4] + arr[1]);
-                      bytes2 = new byte[16*1024];
-                      InputStream file = new FileInputStream("servidor/"+arr[1]);
-                      while ((count2 = file.read(bytes2)) > 0) {
-                        soutput2.write(bytes2, 0, count2);
+                    case "!mget":
+                      for (int i = 0; i <= numFiles; i++){
+                        soutput.println("Server response: File "+files[i]+" downloaded succefully.");                                          
+                        soutput2 = new FileOutputStream(arr[5] + files[i]);
+                        bytes2 = new byte[16*1024];
+                        file = new FileInputStream("servidor/"+files[i]);
+                        while ((count2 = file.read(bytes2)) > 0) {
+                          soutput2.write(bytes2, 0, count2);
+                        }
                       }
                       break;                    
                     
                     default:
-                      soutput.println("Server response: Invalid command." + arr[0]);
+                      soutput.println("Server response: Invalid command." + arr[0] + "\n");
                       break;
                   }                       
                 }          
