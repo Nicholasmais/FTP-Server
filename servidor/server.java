@@ -13,8 +13,8 @@ public class server  {
   BufferedReader sinput;
   Socket csk,clisoket, socket;
   byte[] bytes, bytes2;      
-  FileInputStream fis = null;
-  BufferedInputStream bis = null;
+  private File arq;
+
   
   private String user1 = "user";
   private String pass1 = "1234";
@@ -56,7 +56,7 @@ public class server  {
           switch(arr[0]){    
             case "!put":
             case "!mput":
-              for (int i = 0; i <= numFiles; i++){
+              for (int i = 0; i < numFiles; i++){
                 soutput.println("Server response: File "+files[i]+" uploaded succefully.");               
                 soutput2 = new FileOutputStream("servidor/"+files[i]);
                 bytes = new byte[16*1024];
@@ -68,14 +68,14 @@ public class server  {
               break;                                        
             case "!get":
             case "!mget":
-              for (int i = 0; i <= numFiles; i++){
-                soutput.println("Server response: File "+files[i]+" downloaded succefully.");                                          
-                soutput2 = new FileOutputStream(arr[5] + files[i]);
-                bytes2 = new byte[16*1024];
-                file = new FileInputStream("servidor/"+files[i]);
-                while ((count2 = file.read(bytes2)) > 0) {
-                  soutput2.write(bytes2, 0, count2);
+              for (int i = 0; i < numFiles; i++){
+                bytes = new byte[16 * 1024];
+                arq = new File("servidor/" + files[i]);
+                in = new FileInputStream(arq);                                
+                while ((count = in.read(bytes)) > 0) {
+                  soutput.write(bytes, 0, count);
                 }
+                in.close(); 
               }
               break;            
             default:

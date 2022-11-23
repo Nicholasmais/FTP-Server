@@ -7,6 +7,7 @@ class client {
   private PrintStream coutput;
   private InputStream in;
   private InputStreamReader isr;
+  private OutputStream  soutput;
   private Socket clisoc;
   private boolean auth = false;
   private String user, pass, conn, method, file;
@@ -46,11 +47,11 @@ class client {
           method = br.readLine();
           
           while (true){
-            System.out.println("Nome do arquivo:");
+            System.out.println("Nome do arquivo (0 para sair):");
             file = br.readLine();
             fileName += file + ";";
             if (file.equals("0") || method.indexOf("m") == -1){
-              fileName = fileName.substring(0, fileName.length()-2);
+              fileName = fileName.substring(0, fileName.length()-1);
               numberOfFiles = fileName.split(",").length;
               files = fileName.split(";");
               break;
@@ -62,14 +63,26 @@ class client {
             for (int i = 0; i < numberOfFiles; i++){
               bytes = new byte[16 * 1024];
               arq = new File(this.dir + files[i]);
-              in = new FileInputStream(arq);                                
+              in = new FileInputStream(arq);                  
               while ((count = in.read(bytes)) > 0) {
                 coutput.write(bytes, 0, count);
               }
               in.close();  
             }
           }
-    
+
+          if (method.indexOf("get") != -1){
+            for (int i = 0; i < numberOfFiles; i++){
+              soutput = new FileOutputStream(this.dir + files[i]);
+              bytes = new byte[16*1024];
+              in = clisoc.getInputStream();
+              while ((count = in.read(bytes)) > 0) {
+                soutput.write(bytes, 0, count);
+              }
+              System.out.println("Saiu?");
+            }
+          }
+
           String str = cinput.readLine();
           System.out.println(str + "\n");
         }
